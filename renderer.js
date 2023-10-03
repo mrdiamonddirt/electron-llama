@@ -322,11 +322,53 @@ window.addEventListener('DOMContentLoaded', () => {
         queryInput.value = '';
       })
       .catch(error => {
-        const loading = document.querySelector('.loading');
-        loading.parentNode.removeChild(loading);
-
+        // remove the loading text if it exists
+        if (document.querySelector('.loading')) {
+            const loading = document.querySelector('.loading');
+            loading.parentNode.removeChild(loading);
+        }
+        
         resultDiv.innerHTML += `<div class="error">${error}, is the server up?</div>`;	 
         // console.error(error);
       });
   });
+
+window.addEventListener('message', event => {
+    if (event.source === window) {
+        console.log("from preload: ", event.data)
+
+        const resultDiv = document.getElementById('result');
+
+        if (event.data === 'installing local-llama') {
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+            resultDiv.innerHTML += `<div class="bot">Output: Installing local-llama...</div>`;
+        }
+        if (event.data === 'successfully installed local-llama') {
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+            resultDiv.innerHTML += `<div class="bot">Output: Successfully installed local-llama</div>`;
+        }
+        if (event.data === 'failed to install local-llama') {
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+            resultDiv.innerHTML += `<div class="bot">Output: Failed to install local-llama</div>`;
+        }
+
+        if (event.data === 'server starting') {
+            // add the loading div but only once
+            if (!document.querySelector('.loading')) {
+                resultDiv.scrollTop = resultDiv.scrollHeight;
+                resultDiv.innerHTML += `<div class="loading">"Llama is loading..."</div>`;
+            }
+        }
+        if (event.data.includes('server started')) {
+            // remove the loading div
+            const loading = document.querySelector('.loading');
+                resultDiv.scrollTop = resultDiv.scrollHeight;
+            loading.parentNode.removeChild(loading);
+            resultDiv.innerHTML += `<div class="bot">Output: Local LLM loaded successfully</div>`;
+        }
+        // resultDiv.innerHTML += `<div class="bot">Output: ${event.data}</div>`;
+    }
 })
+
+})
+

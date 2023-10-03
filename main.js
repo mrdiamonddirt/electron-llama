@@ -27,6 +27,9 @@ const createWindow = () => {
 
   win.loadFile('index.html')
 
+  // open dev tools
+  win.webContents.openDevTools()
+
     // createProgress(win)
     return win
 }
