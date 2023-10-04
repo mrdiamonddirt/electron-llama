@@ -27,7 +27,9 @@ function createLLamaProcess() {
     createProcess.on('close', (code) => {
         if (code === 0) {
             console.log(`child process exited successfully with code ${code}`)
-        } else if (code === -4058) { 
+        } else if (code === -4058 || code === 1) {
+            // these are the 2 codes that that i found returned when the local-llama command was not found
+            // there may be more, but i don't know what they are, so we take a chance and try to install local-llama anyway
             console.log('Maybe local-llama is not installed on your system?', code)
             installLocalllama()
         } else {
